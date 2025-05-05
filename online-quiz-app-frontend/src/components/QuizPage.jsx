@@ -117,12 +117,12 @@ const QuizPage = () => {
     setScore(calculatedScore);
 
     try {
-      const { name, rollno, dept } = JSON.parse(
+      const { name, rollNo, dept } = JSON.parse(
         localStorage.getItem("quiz-user")
       );
       await axios.post("http://localhost:5000/api/result/submit", {
         name,
-        rollno,
+        rollNo,
         dept,
         score: calculatedScore,
       });

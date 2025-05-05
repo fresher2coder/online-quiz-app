@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const ResultSchema = new mongoose.Schema({
   name: String,
-  rollno: { type: String, unique: true },
   dept: String,
+  rollNo: { type: String, unique: true },
   score: Number,
   date: { type: Date, default: Date.now },
 });
