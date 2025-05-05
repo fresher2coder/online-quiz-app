@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Welcome from "./components/Welcome";
 import UserForm from "./components/UserForm";
-import Result from "./components/Result";
+
 import QuizPage from "./components/QuizPage";
 
 const AppRouter = () => {
@@ -12,7 +12,6 @@ const AppRouter = () => {
         <Route path="/" element={<Welcome />} />
         <Route path="/form" element={<UserForm />} />
         <Route path="/quiz" element={<QuizPage />} />
-        <Route path="/result" element={<Result />} />
       </Routes>
     </Router>
   );
