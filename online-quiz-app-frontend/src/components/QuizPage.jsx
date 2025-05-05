@@ -79,7 +79,9 @@ const QuizPage = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/quiz/questions");
+        const res = await axios.get(
+          "https://online-quiz-app-tw82.onrender.com/api/quiz/questions"
+        );
         setQuestions(res.data);
       } catch (err) {
         console.error("Error fetching questions:", err);
@@ -120,12 +122,15 @@ const QuizPage = () => {
       const { name, rollNo, dept } = JSON.parse(
         localStorage.getItem("quiz-user")
       );
-      await axios.post("http://localhost:5000/api/result/submit", {
-        name,
-        rollNo,
-        dept,
-        score: calculatedScore,
-      });
+      await axios.post(
+        "https://online-quiz-app-tw82.onrender.com/api/result/submit",
+        {
+          name,
+          rollNo,
+          dept,
+          score: calculatedScore,
+        }
+      );
     } catch (err) {
       console.error("Error submitting result:", err);
     }
