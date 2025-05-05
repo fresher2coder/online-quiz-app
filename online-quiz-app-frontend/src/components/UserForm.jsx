@@ -13,7 +13,7 @@ const Container = styled.div`
 
 const FormCard = styled.div`
   background: white;
-  padding: 3rem;
+  padding: 2.9rem;
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
