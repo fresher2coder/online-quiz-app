@@ -80,8 +80,8 @@ const QuizPage = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await axios.get(
-          "https://online-quiz-app-tw82.onrender.com/api/quiz/questions"
+        const res = await axios.post(
+          "http://localhost:5000/api/quiz/questions"
         );
         setQuestions(res.data);
       } catch (err) {
@@ -119,6 +119,9 @@ const QuizPage = () => {
   }, [score, answers]);
 
   const handleOptionSelect = (questionId, selectedOption) => {
+    console.log("Selected option:", selectedOption);
+    console.log("Question ID:", questionId);
+    console.log("Current answers:", answers);
     setAnswers({ ...answers, [questionId]: selectedOption });
   };
 
@@ -130,15 +133,17 @@ const QuizPage = () => {
 
       let partialScore = 0;
       questions.forEach((q) => {
-        if (answers[q._id] === q.correctAnswer) {
+        if (answers[q._id] === q.answer) {
           partialScore += 1;
         }
       });
 
-      await axios.post(
-        "https://online-quiz-app-tw82.onrender.com/api/result/auto-save",
-        { name, rollNo, dept, score: partialScore }
-      );
+      await axios.post("http://localhost:5000/api/result/auto-save", {
+        name,
+        rollNo,
+        dept,
+        score: partialScore,
+      });
     } catch (err) {
       console.error("Auto-save failed:", err);
     }
@@ -147,7 +152,8 @@ const QuizPage = () => {
   const handleSubmit = async () => {
     let calculatedScore = 0;
     questions.forEach((q) => {
-      if (answers.hasOwnProperty(q._id) && answers[q._id] === q.correctAnswer) {
+      console.log(q._id, answers[q._id], q.answer);
+      if (answers[q._id] && answers[q._id] === q.answer) {
         calculatedScore += 1;
       }
     });
@@ -158,10 +164,12 @@ const QuizPage = () => {
       if (!user) throw new Error("User info missing in localStorage");
       const { name, rollNo, dept } = JSON.parse(user);
 
-      await axios.post(
-        "https://online-quiz-app-tw82.onrender.com/api/result/submit",
-        { name, rollNo, dept, score: calculatedScore }
-      );
+      await axios.post("http://localhost:5000/api/result/submit", {
+        name,
+        rollNo,
+        dept,
+        score: calculatedScore,
+      });
     } catch (err) {
       console.error("Error submitting result:", err);
       if (err.response?.data?.error === "Already submitted") {

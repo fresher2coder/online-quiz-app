@@ -9,14 +9,13 @@ router.post("/check-roll", async (req, res) => {
   const { rollNo } = req.body;
 
   try {
-    const userExists = await User.findOne({ rollNo });
-    const resultExists = await Result.findOne({ rollNo });
+    const [userExists, resultExists] = await Promise.all([
+      User.findOne({ rollNo }),
+      Result.findOne({ rollNo }),
+    ]);
 
     const existsInBoth = userExists && resultExists;
-    // console.log("User exists:", userExists);
-    // console.log("Result exists:", resultExists);
-    // console.log("Exists in both:", !!existsInBoth);
-    res.json({ exists: !!existsInBoth });
+    res.json({ exists: existsInBoth }); // only true if in both
   } catch (err) {
     console.error("Error checking roll number:", err);
     res.status(500).json({ error: "Server error" });
@@ -32,28 +31,31 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-    const userExists = await User.findOne({ rollNo });
-    const resultExists = await Result.findOne({ rollNo });
+    const [userExists, resultExists] = await Promise.all([
+      User.findOne({ rollNo }),
+      Result.findOne({ rollNo }),
+    ]);
 
     if (userExists && resultExists) {
       return res
         .status(400)
-        .json({ error: "User has already completed the quiz." });
+        .json({ error: "You have already completed the quiz." });
     }
 
     if (userExists && !resultExists) {
-      return res.status(400).json({
-        error: "User already registered but has not submitted the quiz yet.",
-      });
+      return res
+        .status(200)
+        .json({ message: "Already registered. Proceed to quiz." });
     }
 
-    // User not registered yet — proceed
+    // Case: new user
     const newUser = new User({ name, rollNo, dept });
     await newUser.save();
-
-    res.status(201).json({ message: "User registered successfully." });
+    return res
+      .status(201)
+      .json({ message: "Registered successfully. Proceed to quiz." });
   } catch (err) {
-    console.error("Error registering user:", err);
+    console.error("Registration error:", err);
     res.status(500).json({ error: "Server error" });
   }
 });

@@ -90,7 +90,7 @@ const UserForm = () => {
     try {
       // Check for duplicate roll number
       const res = await axios.post(
-        "https://online-quiz-app-tw82.onrender.com/api/user/check-roll",
+        "http://localhost:5000/api/user/check-roll",
         {
           rollNo,
         }
@@ -102,14 +102,11 @@ const UserForm = () => {
       }
 
       // Register the user
-      await axios.post(
-        "https://online-quiz-app-tw82.onrender.com/api/user/register",
-        {
-          name,
-          rollNo,
-          dept,
-        }
-      );
+      await axios.post("http://localhost:5000/api/user/register", {
+        name,
+        rollNo,
+        dept,
+      });
 
       // Store the user details in localStorage
       localStorage.setItem("quiz-user", JSON.stringify({ name, rollNo, dept }));
