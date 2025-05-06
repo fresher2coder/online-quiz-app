@@ -13,9 +13,9 @@ router.post("/check-roll", async (req, res) => {
     const resultExists = await Result.findOne({ rollNo });
 
     const existsInBoth = userExists && resultExists;
-    console.log("User exists:", userExists);
-    console.log("Result exists:", resultExists);
-    console.log("Exists in both:", !!existsInBoth);
+    // console.log("User exists:", userExists);
+    // console.log("Result exists:", resultExists);
+    // console.log("Exists in both:", !!existsInBoth);
     res.json({ exists: !!existsInBoth });
   } catch (err) {
     console.error("Error checking roll number:", err);
@@ -33,11 +33,21 @@ router.post("/register", async (req, res) => {
 
   try {
     const userExists = await User.findOne({ rollNo });
+    const resultExists = await Result.findOne({ rollNo });
 
-    if (userExists) {
-      return res.status(400).json({ error: "User already registered." });
+    if (userExists && resultExists) {
+      return res
+        .status(400)
+        .json({ error: "User has already completed the quiz." });
     }
 
+    if (userExists && !resultExists) {
+      return res.status(400).json({
+        error: "User already registered but has not submitted the quiz yet.",
+      });
+    }
+
+    // User not registered yet — proceed
     const newUser = new User({ name, rollNo, dept });
     await newUser.save();
 
