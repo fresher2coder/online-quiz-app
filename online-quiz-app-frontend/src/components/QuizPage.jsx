@@ -75,6 +75,7 @@ const QuizPage = () => {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes (in seconds)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -91,55 +92,86 @@ const QuizPage = () => {
     fetchQuestions();
   }, []);
 
-  // Countdown Timer
   useEffect(() => {
     if (timeLeft === 0) {
       handleSubmit();
       return;
     }
-
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
     }, 1000);
-
-    return () => clearInterval(timer); // Cleanup on component unmount
+    return () => clearInterval(timer);
   }, [timeLeft]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      autoSave();
+    }, 60000); // every 1 minute
+    return () => clearInterval(interval);
+  }, [answers]);
+
+  useEffect(() => {
+    const handleUnload = async () => {
+      if (score === null) await handleSubmit();
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    return () => window.removeEventListener("beforeunload", handleUnload);
+  }, [score, answers]);
 
   const handleOptionSelect = (questionId, selectedOption) => {
     setAnswers({ ...answers, [questionId]: selectedOption });
   };
 
+  const autoSave = async () => {
+    try {
+      const user = localStorage.getItem("quiz-user");
+      if (!user) return;
+      const { name, rollNo, dept } = JSON.parse(user);
+
+      let partialScore = 0;
+      questions.forEach((q) => {
+        if (answers[q._id] === q.correctAnswer) {
+          partialScore += 1;
+        }
+      });
+
+      await axios.post(
+        "https://online-quiz-app-tw82.onrender.com/api/result/auto-save",
+        { name, rollNo, dept, score: partialScore }
+      );
+    } catch (err) {
+      console.error("Auto-save failed:", err);
+    }
+  };
+
   const handleSubmit = async () => {
     let calculatedScore = 0;
     questions.forEach((q) => {
-      if (answers[q._id] === q.correctAnswer) {
+      if (answers.hasOwnProperty(q._id) && answers[q._id] === q.correctAnswer) {
         calculatedScore += 1;
       }
     });
     setScore(calculatedScore);
 
     try {
-      const { name, rollNo, dept } = JSON.parse(
-        localStorage.getItem("quiz-user")
-      );
+      const user = localStorage.getItem("quiz-user");
+      if (!user) throw new Error("User info missing in localStorage");
+      const { name, rollNo, dept } = JSON.parse(user);
+
       await axios.post(
         "https://online-quiz-app-tw82.onrender.com/api/result/submit",
-        {
-          name,
-          rollNo,
-          dept,
-          score: calculatedScore,
-        }
+        { name, rollNo, dept, score: calculatedScore }
       );
     } catch (err) {
       console.error("Error submitting result:", err);
+      if (err.response?.data?.error === "Already submitted") {
+        alert("You have already submitted the quiz.");
+      }
     }
   };
 
-  const navigate = useNavigate();
-
   const handleHomeClick = () => {
-    navigate("/"); // Navigate to the homepage
+    navigate("/");
   };
 
   if (score !== null) {

@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User"); // Make sure User model exists
+const Result = require("../models/Result"); // Make sure User model exists
 
 // POST /api/check-roll
 router.post("/check-roll", async (req, res) => {
@@ -9,7 +10,13 @@ router.post("/check-roll", async (req, res) => {
 
   try {
     const userExists = await User.findOne({ rollNo });
-    res.json({ exists: !!userExists });
+    const resultExists = await Result.findOne({ rollNo });
+
+    const existsInBoth = userExists && resultExists;
+    console.log("User exists:", userExists);
+    console.log("Result exists:", resultExists);
+    console.log("Exists in both:", existsInBoth);
+    res.json({ exists: !!existsInBoth });
   } catch (err) {
     console.error("Error checking roll number:", err);
     res.status(500).json({ error: "Server error" });
