@@ -15,7 +15,7 @@ router.post("/check-roll", async (req, res) => {
     const existsInBoth = userExists && resultExists;
     console.log("User exists:", userExists);
     console.log("Result exists:", resultExists);
-    console.log("Exists in both:", existsInBoth);
+    console.log("Exists in both:", !!existsInBoth);
     res.json({ exists: !!existsInBoth });
   } catch (err) {
     console.error("Error checking roll number:", err);
