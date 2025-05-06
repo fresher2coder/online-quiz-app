@@ -81,7 +81,7 @@ const QuizPage = () => {
     const fetchQuestions = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:5000/api/quiz/questions"
+          "https://online-quiz-app-tw82.onrender.com/api/quiz/questions"
         );
         setQuestions(res.data);
       } catch (err) {
@@ -138,12 +138,15 @@ const QuizPage = () => {
         }
       });
 
-      await axios.post("http://localhost:5000/api/result/auto-save", {
-        name,
-        rollNo,
-        dept,
-        score: partialScore,
-      });
+      await axios.post(
+        "https://online-quiz-app-tw82.onrender.com/api/result/auto-save",
+        {
+          name,
+          rollNo,
+          dept,
+          score: partialScore,
+        }
+      );
     } catch (err) {
       console.error("Auto-save failed:", err);
     }
@@ -164,12 +167,15 @@ const QuizPage = () => {
       if (!user) throw new Error("User info missing in localStorage");
       const { name, rollNo, dept } = JSON.parse(user);
 
-      await axios.post("http://localhost:5000/api/result/submit", {
-        name,
-        rollNo,
-        dept,
-        score: calculatedScore,
-      });
+      await axios.post(
+        "https://online-quiz-app-tw82.onrender.com/api/result/submit",
+        {
+          name,
+          rollNo,
+          dept,
+          score: calculatedScore,
+        }
+      );
     } catch (err) {
       console.error("Error submitting result:", err);
       if (err.response?.data?.error === "Already submitted") {
