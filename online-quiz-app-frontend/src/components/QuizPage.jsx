@@ -15,6 +15,7 @@ const Container = styled.div`
 const MainContent = styled.div`
   flex: 1;
   padding: 2rem;
+  user-select: none;
 `;
 
 const Title = styled.h2`
@@ -75,6 +76,7 @@ const QuizPage = () => {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes (in seconds)
+  const [tabSwitchCount, setTabSwitchCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -117,6 +119,30 @@ const QuizPage = () => {
     window.addEventListener("beforeunload", handleUnload);
     return () => window.removeEventListener("beforeunload", handleUnload);
   }, [score, answers]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setTabSwitchCount((prevCount) => {
+          const newCount = prevCount + 1;
+          if (newCount === 2) {
+            setTimeLeft((prevTime) => Math.max(0, prevTime - 180));
+            alert("You have switched tabs twice. 3 minutes deducted!");
+          } else if (newCount >= 3) {
+            alert(
+              "You have switched tabs 3 times. Quiz will be auto-submitted!"
+            );
+            handleSubmit();
+          }
+          return newCount;
+        });
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
 
   const handleOptionSelect = (questionId, selectedOption) => {
     console.log("Selected option:", selectedOption);
