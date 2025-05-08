@@ -11,8 +11,16 @@ const app = express();
 
 app.use(
   cors({
-    origin: "*", // use specific domain in production
+    origin: process.env.CLIENT_URL || "https://online-quiz-app-jet.vercel.app", // Allow only your frontend domain
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true, // Allow cookies and headers like authorization
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "X-Requested-With",
+      "Origin",
+    ],
   })
 );
 
