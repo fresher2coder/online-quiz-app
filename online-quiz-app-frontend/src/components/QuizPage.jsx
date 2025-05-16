@@ -75,7 +75,7 @@ const QuizPage = () => {
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes (in seconds)
+  const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes (in seconds)
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
   const navigate = useNavigate();
 
