@@ -159,10 +159,11 @@ const UserForm = () => {
             required
           >
             <option value="">Select dept</option>
-            <option value="CSE">CSE</option>
-            <option value="IT">IT</option>
+            <option value="BME">BME</option>
+            <option value="TT">TT</option>
             <option value="EEE">EEE</option>
-            <option value="ECE">ECE</option>
+            <option value="CIVIL">CIVIL</option>
+            <option value="CHEM">CHEM</option>
           </Select>
           <Button type="submit">Start Quiz</Button>
         </form>
