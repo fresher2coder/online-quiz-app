@@ -4,23 +4,42 @@ const router = express.Router();
 const User = require("../models/User"); // Make sure User model exists
 const Result = require("../models/Result"); // Make sure User model exists
 
-// POST /api/check-roll
+// Helper to check if two dates are the same day
+const isSameDay = (date1, date2) => {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+};
+
 router.post("/check-roll", async (req, res) => {
   const { rollNo } = req.body;
 
   try {
-    const [userExists, resultExists] = await Promise.all([
+    const [user, result] = await Promise.all([
       User.findOne({ rollNo }),
       Result.findOne({ rollNo }),
     ]);
 
-    const existsInBoth = userExists && resultExists;
-    res.json({ exists: existsInBoth }); // only true if in both
+    const today = new Date();
+
+    // Check if user exists today
+    const userRegisteredToday = user && isSameDay(user.createdAt, today);
+
+    const existsInBoth = user && result;
+    res.json({
+      exists: existsInBoth,
+      registeredToday: userRegisteredToday,
+      allowRegistration: !userRegisteredToday,
+    });
   } catch (err) {
     console.error("Error checking roll number:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
+
+module.exports = router;
 
 // POST /api/register
 router.post("/register", async (req, res) => {
