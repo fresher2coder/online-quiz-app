@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const Card = styled.div`
   background: white;
@@ -15,17 +17,41 @@ const Option = styled.div`
   border-radius: 8px;
   background-color: ${({ selected }) => (selected ? "#e8f5e9" : "#fff")};
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
+`;
+
+const QuestionText = styled.div`
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  white-space: pre-wrap;
 `;
 
 const QuestionCard = ({ question, selectedOption, onOptionSelect }) => {
+  // Check if the question looks like code (e.g., contains newline and indentation)
+  const isCodeQuestion =
+    question.question.includes("\n") || question.question.includes("    ");
+
   return (
     <Card>
-      <h3>{question.question}</h3>
+      <QuestionText>
+        {isCodeQuestion ? (
+          <SyntaxHighlighter language="python" style={solarizedlight}>
+            {question.question}
+          </SyntaxHighlighter>
+        ) : (
+          question.question
+        )}
+      </QuestionText>
+
       {question.options.map((opt, idx) => (
         <Option
           key={idx}
           selected={selectedOption === opt}
-          onClick={() => onOptionSelect(question._id, opt)}
+          onClick={() => onOptionSelect(question.id, opt)}
         >
           {opt}
         </Option>
