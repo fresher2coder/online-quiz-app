@@ -83,32 +83,45 @@ const UserForm = () => {
 
     const { name, rollNo, dept } = form;
 
+    // Basic client-side validation
     if (!name || !rollNo || !dept) {
       setError("All fields are required.");
       return;
     }
 
+    // if (!studentIds.includes(rollNo)) {
+    //   setError("Invalid Roll Number.");
+    //   return;
+    // }
+
     try {
-      // Check roll number existence and today's registration
+      // Check for duplicate roll number
       const res = await axios.post(
         "https://online-quiz-app-tw82.onrender.com/api/user/check-roll",
-        { rollNo }
+        {
+          rollNo,
+        }
       );
 
-      const { registeredToday } = res.data;
-
-      if (registeredToday) {
-        setError("You have already registered today. Try again tomorrow.");
+      if (res.data.exists) {
+        setError("Roll number already exists.");
         return;
       }
 
-      // Proceed with registration
+      // Register the user
       await axios.post(
         "https://online-quiz-app-tw82.onrender.com/api/user/register",
-        { name, rollNo, dept }
+        {
+          name,
+          rollNo,
+          dept,
+        }
       );
 
+      // Store the user details in localStorage
       localStorage.setItem("quiz-user", JSON.stringify({ name, rollNo, dept }));
+
+      // Clear error and navigate to quiz
       setError("");
       navigate("/quiz", { state: { name, rollNo, dept } });
     } catch (err) {
