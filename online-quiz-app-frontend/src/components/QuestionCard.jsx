@@ -51,7 +51,7 @@ const QuestionCard = ({ question, selectedOption, onOptionSelect }) => {
         <Option
           key={idx}
           selected={selectedOption === opt}
-          onClick={() => onOptionSelect(question.id, opt)}
+          onClick={() => onOptionSelect(question._id, opt)}  {/* <-- Fixed here */}
         >
           {opt}
         </Option>
