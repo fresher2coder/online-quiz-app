@@ -80,6 +80,34 @@ const QuizPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // 🔒 Disable right-click
+    const disableContextMenu = (e) => e.preventDefault();
+    document.addEventListener("contextmenu", disableContextMenu);
+
+    // 🔒 Disable text selection
+    document.body.style.userSelect = "none";
+
+    // 🔒 Disable copy, paste, cut
+    const preventCopyPaste = (e) => e.preventDefault();
+    document.addEventListener("copy", preventCopyPaste);
+    document.addEventListener("cut", preventCopyPaste);
+    document.addEventListener("paste", preventCopyPaste);
+
+    // 🔒 Disable drag
+    document.body.setAttribute("draggable", "false");
+
+    // 🔒 Disable some key shortcuts (DevTools, View Source, etc.)
+    const disableKeys = (e) => {
+      if (
+        e.key === "F12" || // DevTools
+        (e.ctrlKey && e.shiftKey && ["I", "J", "C", "K"].includes(e.key)) ||
+        (e.ctrlKey && e.key === "U") // View Source
+      ) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener("keydown", disableKeys);
+
     const fetchQuestions = async () => {
       try {
         const res = await axios.post(
@@ -92,6 +120,17 @@ const QuizPage = () => {
     };
 
     fetchQuestions();
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("contextmenu", disableContextMenu);
+      document.removeEventListener("copy", preventCopyPaste);
+      document.removeEventListener("cut", preventCopyPaste);
+      document.removeEventListener("paste", preventCopyPaste);
+      document.removeEventListener("keydown", disableKeys);
+      document.body.style.userSelect = "auto";
+      document.body.removeAttribute("draggable");
+    };
   }, []);
 
   useEffect(() => {
