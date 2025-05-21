@@ -66,19 +66,30 @@ const StartButton = styled.button`
 
 function Welcome() {
   const navigate = useNavigate();
+
   const handleStart = () => {
-    navigate("/form");
+    const now = new Date();
+    const currentHour = now.getHours(); // returns hour in 24-hour format
+
+    // Check if current time is between 3 PM (15) and before 4 PM (16)
+    console.log(currentHour);
+    if (currentHour === 15) {
+      navigate("/form");
+    } else {
+      alert(
+        "The quiz is only available between 3 PM and 4 PM. Please come back later."
+      );
+    }
   };
+
   return (
-    <>
-      <Container>
-        <Card>
-          <Title>Welcome to the Quiz</Title>
-          <Subtitle>Test your knowledge with 25 MCQs in 25 minutes!</Subtitle>
-          <StartButton onClick={handleStart}>Start Quiz</StartButton>
-        </Card>
-      </Container>
-    </>
+    <Container>
+      <Card>
+        <Title>Welcome to the Quiz</Title>
+        <Subtitle>Test your knowledge with 25 MCQs in 25 minutes!</Subtitle>
+        <StartButton onClick={handleStart}>Start Quiz</StartButton>
+      </Card>
+    </Container>
   );
 }
 
