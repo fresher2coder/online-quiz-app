@@ -86,7 +86,7 @@ function Welcome() {
     <Container>
       <Card>
         <Title>Welcome to the Quiz</Title>
-        <Subtitle>Test your knowledge with 25 MCQs in 25 minutes!</Subtitle>
+        <Subtitle>Test your knowledge with 40 MCQs in 40 minutes!</Subtitle>
         <StartButton onClick={handleStart}>Start Quiz</StartButton>
       </Card>
     </Container>
