@@ -73,6 +73,7 @@ function Welcome() {
 
     // Check if current time is between 3 PM (15) and before 4 PM (16)
     console.log(currentHour);
+    navigate("/form");
     // if (currentHour === 9) {
     //   navigate("/form");
     // } else {
