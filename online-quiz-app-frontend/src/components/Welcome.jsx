@@ -73,13 +73,13 @@ function Welcome() {
 
     // Check if current time is between 3 PM (15) and before 4 PM (16)
     console.log(currentHour);
-    if (currentHour === 9) {
-      navigate("/form");
-    } else {
-      alert(
-        "The quiz is only available between 9 AM and 10 AM. Please come back later."
-      );
-    }
+    // if (currentHour === 9) {
+    //   navigate("/form");
+    // } else {
+    //   alert(
+    //     "The quiz is only available between 9 AM and 10 AM. Please come back later."
+    //   );
+    // }
   };
 
   return (
