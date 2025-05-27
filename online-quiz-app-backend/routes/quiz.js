@@ -4,7 +4,7 @@ const Question = require("../models/Question");
 
 router.post("/questions", async (req, res) => {
   try {
-    const questions = await Question.aggregate([{ $sample: { size: 25 } }]);
+    const questions = await Question.aggregate([{ $sample: { size: 40 } }]);
     res.json(questions);
   } catch (err) {
     res.status(500).json({ error: "Failed to get questions" });
