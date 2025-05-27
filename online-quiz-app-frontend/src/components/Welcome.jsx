@@ -77,7 +77,7 @@ function Welcome() {
       navigate("/form");
     } else {
       alert(
-        "The quiz is only available between 3 PM and 4 PM. Please come back later."
+        "The quiz is only available between 9 AM and 10 AM. Please come back later."
       );
     }
   };
