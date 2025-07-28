@@ -70,16 +70,17 @@ function Welcome() {
   const handleStart = () => {
     const now = new Date();
     const currentHour = now.getHours(); // returns hour in 24-hour format
+    const currentMin = now.getMinutes();
 
     // Check if current time is between 3 PM (15) and before 4 PM (16)
-    console.log(currentHour);
+    // console.log(currentHour, currentMin);
     navigate("/form");
-    // if (currentHour === 9) {
+    // if (currentHour === 15 && currentMin >= 15 && currentMin <= 45) {
     //   navigate("/form");
+    // } else if (currentHour < 15 || currentMin < 15) {
+    //   alert("The test is not yet started, Please come back later.");
     // } else {
-    //   alert(
-    //     "The quiz is only available between 9 AM and 10 AM. Please come back later."
-    //   );
+    //   alert("The test is over, better luck next time");
     // }
   };
 
@@ -87,7 +88,7 @@ function Welcome() {
     <Container>
       <Card>
         <Title>Welcome to the Quiz</Title>
-        <Subtitle>Test your knowledge with 40 MCQs in 40 minutes!</Subtitle>
+        <Subtitle>Test your knowledge</Subtitle>
         <StartButton onClick={handleStart}>Start Quiz</StartButton>
       </Card>
     </Container>
