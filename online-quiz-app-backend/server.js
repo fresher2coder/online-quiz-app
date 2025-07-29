@@ -8,12 +8,20 @@ const resultRoutes = require("./routes/result");
 const userRoutes = require("./routes/user");
 
 const app = express();
+// Optional debug route
+app.get("/", (req, res) => {
+  res.send("Quiz backend is running");
+});
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://online-quiz-app-jet.vercel.app", // Allow only your frontend domain
+    origin: [
+      process.env.CLIENT_URL,
+      "https://online-quiz-app-jet.vercel.app",
+      "http://localhost:5173",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // Allow cookies and headers like authorization
+    credentials: true,
     allowedHeaders: [
       "Content-Type",
       "Authorization",

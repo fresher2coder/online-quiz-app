@@ -71,11 +71,13 @@ const SubmitButton = styled(Button)`
 `;
 
 const QuizPage = () => {
+  const baseURL = import.meta.env.VITE_BASE_REST_API;
+
   const [questions, setQuestions] = useState([]);
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(40 * 60); // 25 minutes (in seconds)
+  const [timeLeft, setTimeLeft] = useState(30 * 60); // 25 minutes (in seconds)
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
   const navigate = useNavigate();
 
@@ -110,9 +112,7 @@ const QuizPage = () => {
 
     const fetchQuestions = async () => {
       try {
-        const res = await axios.post(
-          "https://online-quiz-app-tw82.onrender.com/api/quiz/questions"
-        );
+        const res = await axios.post(`${baseURL}/quiz/questions`);
         setQuestions(res.data);
       } catch (err) {
         console.error("Error fetching questions:", err);
@@ -165,8 +165,10 @@ const QuizPage = () => {
         setTabSwitchCount((prevCount) => {
           const newCount = prevCount + 1;
           if (newCount === 2) {
-            setTimeLeft((prevTime) => Math.max(0, prevTime - 180));
-            alert("You have switched tabs twice. 3 minutes deducted!");
+            setTimeLeft((prevTime) => Math.max(0, Math.floor(prevTime / 2)));
+            alert(
+              "You have switched tabs twice. 50% of your time has been deducted!!"
+            );
           } else if (newCount >= 3) {
             alert(
               "You have switched tabs 3 times. Quiz will be auto-submitted!"
@@ -182,6 +184,17 @@ const QuizPage = () => {
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, []);
+
+  // Add near the top level of component
+  useEffect(() => {
+    if (score !== null) {
+      const timer = setTimeout(() => {
+        navigate("/"); // Redirect to homepage
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [score]);
 
   const handleOptionSelect = (questionId, selectedOption) => {
     console.log("Selected option:", selectedOption);
@@ -203,15 +216,12 @@ const QuizPage = () => {
         }
       });
 
-      await axios.post(
-        "https://online-quiz-app-tw82.onrender.com/api/result/auto-save",
-        {
-          name,
-          rollNo,
-          dept,
-          score: partialScore,
-        }
-      );
+      await axios.post(`${baseURL}/result/auto-save`, {
+        name,
+        rollNo,
+        dept,
+        score: partialScore,
+      });
     } catch (err) {
       console.error("Auto-save failed:", err);
     }
@@ -232,15 +242,12 @@ const QuizPage = () => {
       if (!user) throw new Error("User info missing in localStorage");
       const { name, rollNo, dept } = JSON.parse(user);
 
-      await axios.post(
-        "https://online-quiz-app-tw82.onrender.com/api/result/submit",
-        {
-          name,
-          rollNo,
-          dept,
-          score: calculatedScore,
-        }
-      );
+      await axios.post(`${baseURL}/result/submit`, {
+        name,
+        rollNo,
+        dept,
+        score: calculatedScore,
+      });
     } catch (err) {
       console.error("Error submitting result:", err);
       if (err.response?.data?.error === "Already submitted") {

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import studentIds from "../data/studentIds"; // adjust path based on your folder structure
 
 const Container = styled.div`
   min-height: 100vh;
@@ -67,9 +68,9 @@ const Error = styled.p`
   text-align: center;
 `;
 
-const studentIds = ["241LA22004", "241LA22005"];
-
 const UserForm = () => {
+  const baseURL = import.meta.env.VITE_BASE_REST_API;
+
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", rollNo: "", dept: "" });
   const [error, setError] = useState("");
@@ -78,8 +79,29 @@ const UserForm = () => {
     setForm({ ...form, [e.target.name]: e.target.value.trim().toUpperCase() });
   };
 
+  const handleStart = () => {
+    const now = new Date();
+    const currentHour = now.getHours(); // 24-hour format
+    const currentMin = now.getMinutes();
+
+    // Allowed: 3:15 PM to 3:45 PM
+    if (currentHour === 15 && currentMin >= 15 && currentMin <= 45) {
+      return true;
+    } else if (currentHour < 15 || (currentHour === 15 && currentMin < 15)) {
+      alert("The test has not yet started. Please come back later.");
+      return false;
+    } else {
+      alert("The test is over. Better luck next time.");
+      return false;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ❗ Only continue if the time is valid
+    const canStart = handleStart();
+    if (!canStart) return;
 
     const { name, rollNo, dept } = form;
 
@@ -89,19 +111,17 @@ const UserForm = () => {
       return;
     }
 
-    if (!studentIds.includes(rollNo)) {
+    if (!studentIds.includes(rollNo.trim().toUpperCase())) {
       setError("Invalid Unique Number.");
       return;
     }
 
     try {
+      console.log(`${baseURL}/user/check-roll`);
       // Check for duplicate roll number
-      const res = await axios.post(
-        "https://online-quiz-app-tw82.onrender.com/api/user/check-roll",
-        {
-          rollNo,
-        }
-      );
+      const res = await axios.post(`${baseURL}/user/check-roll`, {
+        rollNo,
+      });
 
       if (res.data.exists) {
         setError("Roll number already exists.");
@@ -109,14 +129,11 @@ const UserForm = () => {
       }
 
       // Register the user
-      await axios.post(
-        "https://online-quiz-app-tw82.onrender.com/api/user/register",
-        {
-          name,
-          rollNo,
-          dept,
-        }
-      );
+      await axios.post(`${baseURL}/user/register`, {
+        name,
+        rollNo,
+        dept,
+      });
 
       // Store the user details in localStorage
       localStorage.setItem("quiz-user", JSON.stringify({ name, rollNo, dept }));
@@ -159,11 +176,12 @@ const UserForm = () => {
             required
           >
             <option value="">Select dept</option>
-            <option value="BME">BME</option>
-            <option value="TT">TT</option>
-            <option value="EEE">EEE</option>
-            <option value="CIVIL">CIVIL</option>
-            <option value="CHEM">CHEM</option>
+            <option value="AIDA">AIDA</option>
+            <option value="AIML">AIML</option>
+            <option value="MEDENG">MEDENG</option>
+            <option value="CYBSEC">CYBSEC</option>
+            <option value="BSC-AIDA">BSC-AIDA</option>
+            <option value="BSC-DS">BSC-DS</option>
           </Select>
           <Button type="submit">Start Quiz</Button>
         </form>
