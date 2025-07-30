@@ -100,7 +100,7 @@ const UserForm = () => {
     e.preventDefault();
 
     // ❗ Only continue if the time is valid
-    const canStart = handleStart();
+    // const canStart = handleStart();
     // if (!canStart) return;
 
     const { name, rollNo, dept } = form;
