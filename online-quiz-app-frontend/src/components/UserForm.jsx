@@ -117,7 +117,7 @@ const UserForm = () => {
     }
 
     try {
-      console.log(`${baseURL}/user/check-roll`);
+      // console.log(`${baseURL}/user/check-roll`);
       // Check for duplicate roll number
       const res = await axios.post(`${baseURL}/user/check-roll`, {
         rollNo,

@@ -197,9 +197,9 @@ const QuizPage = () => {
   }, [score]);
 
   const handleOptionSelect = (questionId, selectedOption) => {
-    console.log("Selected option:", selectedOption);
-    console.log("Question ID:", questionId);
-    console.log("Current answers:", answers);
+    // console.log("Selected option:", selectedOption);
+    // console.log("Question ID:", questionId);
+    // console.log("Current answers:", answers);
     setAnswers({ ...answers, [questionId]: selectedOption });
   };
 
@@ -230,7 +230,7 @@ const QuizPage = () => {
   const handleSubmit = async () => {
     let calculatedScore = 0;
     questions.forEach((q) => {
-      console.log(q._id, answers[q._id], q.answer);
+      // console.log(q._id, answers[q._id], q.answer);
       if (answers[q._id] && answers[q._id] === q.answer) {
         calculatedScore += 1;
       }
