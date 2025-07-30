@@ -74,14 +74,14 @@ function Welcome() {
 
     // Check if current time is between 3 PM (15) and before 4 PM (16)
     // console.log(currentHour, currentMin);
-    // navigate("/form");
-    if (currentHour === 15 && currentMin >= 15 && currentMin <= 45) {
-      navigate("/form");
-    } else if (currentHour < 15 || currentMin < 15) {
-      alert("The test is not yet started, Please come back later.");
-    } else {
-      alert("The test is over, better luck next time");
-    }
+    navigate("/form");
+    // if (currentHour === 15 && currentMin >= 15 && currentMin <= 45) {
+    //   navigate("/form");
+    // } else if (currentHour < 15 || currentMin < 15) {
+    //   alert("The test is not yet started, Please come back later.");
+    // } else {
+    //   alert("The test is over, better luck next time");
+    // }
   };
 
   return (
